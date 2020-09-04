@@ -10,7 +10,7 @@ import (
 	"log"
 	"net/http"
 
-	api "github.com/deepmap/oapi-codegen/examples/petstore-expanded/chi/api"
+	api "github.com/deepmap/oapi-codegen/v2/examples/petstore-expanded/chi/api"
 )
 
 func main() {

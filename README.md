@@ -31,7 +31,7 @@ write a lot of boilerplate code to perform all the marshalling and unmarshalling
 into objects which match the OpenAPI 3.0 definition. The code generator in this
 directory does a lot of that for you. You would run it like so:
 
-    go get github.com/deepmap/oapi-codegen/cmd/oapi-codegen
+    go get github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen
     oapi-codegen petstore-expanded.yaml  > petstore.gen.go
 
 Let's go through that `petstore.gen.go` file to show you everything which was
@@ -372,7 +372,7 @@ which help you to use the various OpenAPI 3 Authentication mechanism.
 
 ```
     import (
-        "github.com/deepmap/oapi-codegen/pkg/securityprovider"
+        "github.com/deepmap/oapi-codegen/v2/pkg/securityprovider"
     )
 
     func CreateSampleProviders() error {
