@@ -495,9 +495,10 @@ func SchemaNameToTypeName(name string) string {
 // you must specify an additionalProperties type
 // If additionalProperties it true/false, this field will be non-nil.
 func SchemaHasAdditionalProperties(schema *openapi3.Schema) bool {
-	if schema.AdditionalPropertiesAllowed != nil {
-		return *schema.AdditionalPropertiesAllowed
+	if schema.AdditionalPropertiesAllowed != nil && *schema.AdditionalPropertiesAllowed {
+		return true
 	}
+
 	if schema.AdditionalProperties != nil {
 		return true
 	}

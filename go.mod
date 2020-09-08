@@ -1,26 +1,23 @@
 module github.com/deepmap/oapi-codegen/v2
 
 require (
-	github.com/cyberdelia/templates v0.0.0-20141128023046-ca7fffd4298c
+	github.com/cyberdelia/templates v0.0.0-20191230040416-20a325f050d4
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/getkin/kin-openapi v0.21.0
-	github.com/go-chi/chi v4.0.2+incompatible
+	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/golangci/lint-1 v0.0.0-20181222135242-d2cdd8c08219
-	github.com/kr/pretty v0.1.0 // indirect
-	github.com/labstack/echo/v4 v4.1.11
-	github.com/matryer/moq v0.0.0-20190312154309-6cfb0558e1bd
-	github.com/mattn/go-colorable v0.1.4 // indirect
-	github.com/mattn/go-isatty v0.0.10 // indirect
-	github.com/pkg/errors v0.8.1
-	github.com/stretchr/testify v1.5.1
-	github.com/valyala/fasttemplate v1.1.0 // indirect
-	golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708 // indirect
-	golang.org/x/net v0.0.0-20191112182307-2180aed22343 // indirect
-	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
-	golang.org/x/text v0.3.2 // indirect
-	golang.org/x/tools v0.0.0-20191125144606-a911d9008d1f
-	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
+	github.com/kr/text v0.2.0 // indirect
+	github.com/labstack/echo/v4 v4.1.17
+	github.com/matryer/moq v0.1.3
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/pkg/errors v0.9.1
+	github.com/stretchr/testify v1.6.1
+	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
+	golang.org/x/sys v0.0.0-20200831180312-196b9ba8737a // indirect
+	golang.org/x/tools v0.0.0-20200904185747-39188db58858
+	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
 
 go 1.11

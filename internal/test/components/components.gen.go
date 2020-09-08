@@ -24,9 +24,10 @@ import (
 
 // AdditionalPropertiesObject1 defines model for AdditionalPropertiesObject1.
 type AdditionalPropertiesObject1 struct {
-	Id       int     `json:"id"`
-	Name     string  `json:"name"`
-	Optional *string `json:"optional,omitempty"`
+	Id                   int            `json:"id"`
+	Name                 string         `json:"name"`
+	Optional             *string        `json:"optional,omitempty"`
+	AdditionalProperties map[string]int `json:"-"`
 }
 
 // AdditionalPropertiesObject2 defines model for AdditionalPropertiesObject2.
@@ -55,7 +56,9 @@ type AdditionalPropertiesObject4_Inner struct {
 }
 
 // AdditionalPropertiesObject5 defines model for AdditionalPropertiesObject5.
-type AdditionalPropertiesObject5 map[string]interface{}
+type AdditionalPropertiesObject5 struct {
+	AdditionalProperties map[string]SchemaObject `json:"-"`
+}
 
 // ObjectWithJsonField defines model for ObjectWithJsonField.
 type ObjectWithJsonField struct {
@@ -94,15 +97,25 @@ type ParamsWithAddPropsParams struct {
 	// This parameter has an anonymous inner property which needs to be
 	// turned into a proper type for additionalProperties to work
 	P2 struct {
-		Inner map[string]interface{} `json:"inner"`
+		Inner ParamsWithAddPropsParams_P2_Inner `json:"inner"`
 	} `json:"p2"`
+}
+
+// ParamsWithAddPropsParams_P2_Inner defines parameters for ParamsWithAddProps.
+type ParamsWithAddPropsParams_P2_Inner struct {
+	AdditionalProperties map[string]string `json:"-"`
 }
 
 // BodyWithAddPropsJSONBody defines parameters for BodyWithAddProps.
 type BodyWithAddPropsJSONBody struct {
-	Inner                map[string]interface{} `json:"inner"`
-	Name                 string                 `json:"name"`
-	AdditionalProperties map[string]interface{} `json:"-"`
+	Inner                BodyWithAddPropsJSONBody_Inner `json:"inner"`
+	Name                 string                         `json:"name"`
+	AdditionalProperties map[string]interface{}         `json:"-"`
+}
+
+// BodyWithAddPropsJSONBody_Inner defines parameters for BodyWithAddProps.
+type BodyWithAddPropsJSONBody_Inner struct {
+	AdditionalProperties map[string]int `json:"-"`
 }
 
 // EnsureEverythingIsReferencedRequestBody defines body for EnsureEverythingIsReferenced for application/json ContentType.
@@ -152,6 +165,59 @@ func (a *ParamsWithAddPropsParams_P1) UnmarshalJSON(b []byte) error {
 
 // Override default JSON handling for ParamsWithAddPropsParams_P1 to handle AdditionalProperties
 func (a ParamsWithAddPropsParams_P1) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("error marshaling '%s'", fieldName))
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for ParamsWithAddPropsParams_P2_Inner. Returns the specified
+// element and whether it was found
+func (a ParamsWithAddPropsParams_P2_Inner) Get(fieldName string) (value string, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for ParamsWithAddPropsParams_P2_Inner
+func (a *ParamsWithAddPropsParams_P2_Inner) Set(fieldName string, value string) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]string)
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for ParamsWithAddPropsParams_P2_Inner to handle AdditionalProperties
+func (a *ParamsWithAddPropsParams_P2_Inner) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]string)
+		for fieldName, fieldBuf := range object {
+			var fieldVal string
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("error unmarshaling field %s", fieldName))
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for ParamsWithAddPropsParams_P2_Inner to handle AdditionalProperties
+func (a ParamsWithAddPropsParams_P2_Inner) MarshalJSON() ([]byte, error) {
 	var err error
 	object := make(map[string]json.RawMessage)
 
@@ -232,6 +298,153 @@ func (a BodyWithAddPropsJSONBody) MarshalJSON() ([]byte, error) {
 	object["name"], err = json.Marshal(a.Name)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("error marshaling 'name'"))
+	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("error marshaling '%s'", fieldName))
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for BodyWithAddPropsJSONBody_Inner. Returns the specified
+// element and whether it was found
+func (a BodyWithAddPropsJSONBody_Inner) Get(fieldName string) (value int, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for BodyWithAddPropsJSONBody_Inner
+func (a *BodyWithAddPropsJSONBody_Inner) Set(fieldName string, value int) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]int)
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for BodyWithAddPropsJSONBody_Inner to handle AdditionalProperties
+func (a *BodyWithAddPropsJSONBody_Inner) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]int)
+		for fieldName, fieldBuf := range object {
+			var fieldVal int
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("error unmarshaling field %s", fieldName))
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for BodyWithAddPropsJSONBody_Inner to handle AdditionalProperties
+func (a BodyWithAddPropsJSONBody_Inner) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("error marshaling '%s'", fieldName))
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for AdditionalPropertiesObject1. Returns the specified
+// element and whether it was found
+func (a AdditionalPropertiesObject1) Get(fieldName string) (value int, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AdditionalPropertiesObject1
+func (a *AdditionalPropertiesObject1) Set(fieldName string, value int) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]int)
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AdditionalPropertiesObject1 to handle AdditionalProperties
+func (a *AdditionalPropertiesObject1) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["id"]; found {
+		err = json.Unmarshal(raw, &a.Id)
+		if err != nil {
+			return errors.Wrap(err, "error reading 'id'")
+		}
+		delete(object, "id")
+	}
+
+	if raw, found := object["name"]; found {
+		err = json.Unmarshal(raw, &a.Name)
+		if err != nil {
+			return errors.Wrap(err, "error reading 'name'")
+		}
+		delete(object, "name")
+	}
+
+	if raw, found := object["optional"]; found {
+		err = json.Unmarshal(raw, &a.Optional)
+		if err != nil {
+			return errors.Wrap(err, "error reading 'optional'")
+		}
+		delete(object, "optional")
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]int)
+		for fieldName, fieldBuf := range object {
+			var fieldVal int
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("error unmarshaling field %s", fieldName))
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AdditionalPropertiesObject1 to handle AdditionalProperties
+func (a AdditionalPropertiesObject1) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
+
+	object["id"], err = json.Marshal(a.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("error marshaling 'id'"))
+	}
+
+	object["name"], err = json.Marshal(a.Name)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("error marshaling 'name'"))
+	}
+
+	if a.Optional != nil {
+		object["optional"], err = json.Marshal(a.Optional)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("error marshaling 'optional'"))
+		}
 	}
 
 	for fieldName, field := range a.AdditionalProperties {
@@ -444,6 +657,59 @@ func (a AdditionalPropertiesObject4_Inner) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("error marshaling 'name'"))
 	}
+
+	for fieldName, field := range a.AdditionalProperties {
+		object[fieldName], err = json.Marshal(field)
+		if err != nil {
+			return nil, errors.Wrap(err, fmt.Sprintf("error marshaling '%s'", fieldName))
+		}
+	}
+	return json.Marshal(object)
+}
+
+// Getter for additional properties for AdditionalPropertiesObject5. Returns the specified
+// element and whether it was found
+func (a AdditionalPropertiesObject5) Get(fieldName string) (value SchemaObject, found bool) {
+	if a.AdditionalProperties != nil {
+		value, found = a.AdditionalProperties[fieldName]
+	}
+	return
+}
+
+// Setter for additional properties for AdditionalPropertiesObject5
+func (a *AdditionalPropertiesObject5) Set(fieldName string, value SchemaObject) {
+	if a.AdditionalProperties == nil {
+		a.AdditionalProperties = make(map[string]SchemaObject)
+	}
+	a.AdditionalProperties[fieldName] = value
+}
+
+// Override default JSON handling for AdditionalPropertiesObject5 to handle AdditionalProperties
+func (a *AdditionalPropertiesObject5) UnmarshalJSON(b []byte) error {
+	object := make(map[string]json.RawMessage)
+	err := json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if len(object) != 0 {
+		a.AdditionalProperties = make(map[string]SchemaObject)
+		for fieldName, fieldBuf := range object {
+			var fieldVal SchemaObject
+			err := json.Unmarshal(fieldBuf, &fieldVal)
+			if err != nil {
+				return errors.Wrap(err, fmt.Sprintf("error unmarshaling field %s", fieldName))
+			}
+			a.AdditionalProperties[fieldName] = fieldVal
+		}
+	}
+	return nil
+}
+
+// Override default JSON handling for AdditionalPropertiesObject5 to handle AdditionalProperties
+func (a AdditionalPropertiesObject5) MarshalJSON() ([]byte, error) {
+	var err error
+	object := make(map[string]json.RawMessage)
 
 	for fieldName, field := range a.AdditionalProperties {
 		object[fieldName], err = json.Marshal(field)
