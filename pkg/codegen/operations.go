@@ -682,17 +682,17 @@ func GenerateChiServer(t *template.Template, operations []OperationDefinition) (
 // GenerateEchoServer This function generates all the go code for the ServerInterface as well as
 // all the wrapper functions around our handlers.
 func GenerateEchoServer(t *template.Template, operations []OperationDefinition) (string, error) {
-	si, err := GenerateServerInterface(t, operations)
+	si, err := GenerateEchoServerInterface(t, operations)
 	if err != nil {
 		return "", fmt.Errorf("Error generating server types and interface: %s", err)
 	}
 
-	wrappers, err := GenerateWrappers(t, operations)
+	wrappers, err := GenerateEchoWrappers(t, operations)
 	if err != nil {
 		return "", fmt.Errorf("Error generating handler wrappers: %s", err)
 	}
 
-	register, err := GenerateRegistration(t, operations)
+	register, err := GenerateEchoRegistration(t, operations)
 	if err != nil {
 		return "", fmt.Errorf("Error generating handler registration: %s", err)
 	}
@@ -700,11 +700,11 @@ func GenerateEchoServer(t *template.Template, operations []OperationDefinition) 
 }
 
 // Uses the template engine to generate the server interface
-func GenerateServerInterface(t *template.Template, ops []OperationDefinition) (string, error) {
+func GenerateEchoServerInterface(t *template.Template, ops []OperationDefinition) (string, error) {
 	var buf bytes.Buffer
 	w := bufio.NewWriter(&buf)
 
-	err := t.ExecuteTemplate(w, "server-interface.tmpl", ops)
+	err := t.ExecuteTemplate(w, "echo-server-interface.tmpl", ops)
 
 	if err != nil {
 		return "", fmt.Errorf("error generating server interface: %s", err)
@@ -719,11 +719,11 @@ func GenerateServerInterface(t *template.Template, ops []OperationDefinition) (s
 // Uses the template engine to generate all the wrappers which wrap our simple
 // interface functions and perform marshallin/unmarshalling from HTTP
 // request objects.
-func GenerateWrappers(t *template.Template, ops []OperationDefinition) (string, error) {
+func GenerateEchoWrappers(t *template.Template, ops []OperationDefinition) (string, error) {
 	var buf bytes.Buffer
 	w := bufio.NewWriter(&buf)
 
-	err := t.ExecuteTemplate(w, "wrappers.tmpl", ops)
+	err := t.ExecuteTemplate(w, "echo-wrappers.tmpl", ops)
 
 	if err != nil {
 		return "", fmt.Errorf("error generating server interface: %s", err)
@@ -737,11 +737,88 @@ func GenerateWrappers(t *template.Template, ops []OperationDefinition) (string, 
 
 // Uses the template engine to generate the function which registers our wrappers
 // as Echo path handlers.
-func GenerateRegistration(t *template.Template, ops []OperationDefinition) (string, error) {
+func GenerateEchoRegistration(t *template.Template, ops []OperationDefinition) (string, error) {
 	var buf bytes.Buffer
 	w := bufio.NewWriter(&buf)
 
-	err := t.ExecuteTemplate(w, "register.tmpl", ops)
+	err := t.ExecuteTemplate(w, "echo-register.tmpl", ops)
+
+	if err != nil {
+		return "", fmt.Errorf("error generating route registration: %s", err)
+	}
+	err = w.Flush()
+	if err != nil {
+		return "", fmt.Errorf("error flushing output buffer for route registration: %s", err)
+	}
+	return buf.String(), nil
+}
+
+// GenerateEchoServer This function generates all the go code for the ServerInterface as well as
+// all the wrapper functions around our handlers.
+func GenerateNetServer(t *template.Template, operations []OperationDefinition) (string, error) {
+	si, err := GenerateNetServerInterface(t, operations)
+	if err != nil {
+		return "", fmt.Errorf("Error generating server types and interface: %s", err)
+	}
+/*
+	wrappers, err := GenerateNetWrappers(t, operations)
+	if err != nil {
+		return "", fmt.Errorf("Error generating handler wrappers: %s", err)
+	}
+
+	register, err := GenerateNetRegistration(t, operations)
+	if err != nil {
+		return "", fmt.Errorf("Error generating handler registration: %s", err)
+	}
+	return strings.Join([]string{si, wrappers, register}, "\n"), nil
+ */
+	return strings.Join([]string{si}, "\n"), nil
+
+}
+
+// Uses the template engine to generate the server interface
+func GenerateNetServerInterface(t *template.Template, ops []OperationDefinition) (string, error) {
+	var buf bytes.Buffer
+	w := bufio.NewWriter(&buf)
+
+	err := t.ExecuteTemplate(w, "net-server-interface.tmpl", ops)
+
+	if err != nil {
+		return "", fmt.Errorf("error generating server interface: %s", err)
+	}
+	err = w.Flush()
+	if err != nil {
+		return "", fmt.Errorf("error flushing output buffer for server interface: %s", err)
+	}
+	return buf.String(), nil
+}
+
+// Uses the template engine to generate all the wrappers which wrap our simple
+// interface functions and perform marshallin/unmarshalling from HTTP
+// request objects.
+func GenerateNetWrappers(t *template.Template, ops []OperationDefinition) (string, error) {
+	var buf bytes.Buffer
+	w := bufio.NewWriter(&buf)
+
+	err := t.ExecuteTemplate(w, "net-wrappers.tmpl", ops)
+
+	if err != nil {
+		return "", fmt.Errorf("error generating server interface: %s", err)
+	}
+	err = w.Flush()
+	if err != nil {
+		return "", fmt.Errorf("error flushing output buffer for server interface: %s", err)
+	}
+	return buf.String(), nil
+}
+
+// Uses the template engine to generate the function which registers our wrappers
+// as Echo path handlers.
+func GenerateNetRegistration(t *template.Template, ops []OperationDefinition) (string, error) {
+	var buf bytes.Buffer
+	w := bufio.NewWriter(&buf)
+
+	err := t.ExecuteTemplate(w, "net-register.tmpl", ops)
 
 	if err != nil {
 		return "", fmt.Errorf("error generating route registration: %s", err)

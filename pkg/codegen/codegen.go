@@ -33,6 +33,7 @@ import (
 type Options struct {
 	GenerateChiServer  bool              // GenerateChiServer specifies whether to generate chi server boilerplate
 	GenerateEchoServer bool              // GenerateEchoServer specifies whether to generate echo server boilerplate
+	GenerateNetServer  bool              // GenerateNetServer specifies whether to generate default net/http server boilerplate
 	GenerateClient     bool              // GenerateClient specifies whether to generate client boilerplate
 	GenerateTypes      bool              // GenerateTypes specifies whether to generate type definitions
 	EmbedSpec          bool              // Whether to embed the swagger spec in the generated code
@@ -141,6 +142,14 @@ func Generate(swagger *openapi3.Swagger, packageName string, opts Options) (stri
 		}
 	}
 
+	var netServerOut string
+	if opts.GenerateNetServer {
+		netServerOut, err = GenerateNetServer(t, ops)
+		if err != nil {
+			return "", errors.Wrap(err, "error generating Go handlers for Paths")
+		}
+	}
+
 	var echoServerOut string
 	if opts.GenerateEchoServer {
 		echoServerOut, err = GenerateEchoServer(t, ops)
@@ -209,6 +218,13 @@ func Generate(swagger *openapi3.Swagger, packageName string, opts Options) (stri
 		_, err = w.WriteString(clientWithResponsesOut)
 		if err != nil {
 			return "", errors.Wrap(err, "error writing client")
+		}
+	}
+
+	if opts.GenerateNetServer {
+		_, err = w.WriteString(netServerOut)
+		if err != nil {
+			return "", errors.Wrap(err, "error writing server path handlers")
 		}
 	}
 

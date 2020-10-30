@@ -69,14 +69,20 @@ func main() {
 	}
 
 	opts := codegen.Options{}
+	serverCount := 0
 	for _, g := range splitCSVArg(generate) {
 		switch g {
 		case "client":
 			opts.GenerateClient = true
 		case "chi-server":
 			opts.GenerateChiServer = true
-		case "server":
+			serverCount++
+		case "echo-server":
 			opts.GenerateEchoServer = true
+			serverCount++
+		case "server":
+			opts.GenerateNetServer = true
+			serverCount++
 		case "types":
 			opts.GenerateTypes = true
 		case "spec":
@@ -96,8 +102,8 @@ func main() {
 	opts.ExcludeTags = splitCSVArg(excludeTags)
 	opts.ExcludeSchemas = splitCSVArg(excludeSchemas)
 
-	if opts.GenerateEchoServer && opts.GenerateChiServer {
-		errExit("can not specify both server and chi-server targets simultaneously")
+	if serverCount > 1 {
+		errExit("can not specify net/http server, echo-server and chi-server targets simultaneously")
 	}
 
 	swagger, err := util.LoadSwagger(flag.Arg(0))
