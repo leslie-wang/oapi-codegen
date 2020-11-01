@@ -269,6 +269,13 @@ func (o *OperationDefinition) GetResponseTypeDefinitions() ([]TypeDefinition, er
 		// We can only generate a type if we have a value:
 		if responseRef.Value != nil {
 			sortedContentKeys := SortedContentKeys(responseRef.Value.Content)
+			if len(sortedContentKeys) == 0 {
+				tds = append(tds, TypeDefinition{
+					TypeName:     "NO" + responseName,
+					ResponseName: responseName,
+				})
+				continue
+			}
 			for _, contentTypeName := range sortedContentKeys {
 				contentType := responseRef.Value.Content[contentTypeName]
 				// We can only generate a type if we have a schema:

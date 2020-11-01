@@ -17,6 +17,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -246,6 +247,14 @@ func getConditionOfResponseName(statusCodeVar, responseName string) string {
 	}
 }
 
+func getStatusCode(t TypeDefinition) int {
+	if t.ResponseName == "default" {
+		return 500
+	}
+	code, _ := strconv.Atoi(t.ResponseName)
+	return code
+}
+
 // This outputs a string array
 func toStringArray(sarr []string) string {
 	return `[]string{"` + strings.Join(sarr, `","`) + `"}`
@@ -272,6 +281,7 @@ var TemplateFunctions = template.FuncMap{
 	"genResponseTypeName":        genResponseTypeName,
 	"genResponseUnmarshal":       genResponseUnmarshal,
 	"getResponseTypeDefinitions": getResponseTypeDefinitions,
+	"getStatusCode": 			getStatusCode,
 	"toStringArray":              toStringArray,
 	"lower":                      strings.ToLower,
 	"title":                      strings.Title,

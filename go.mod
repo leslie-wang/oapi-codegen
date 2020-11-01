@@ -1,11 +1,13 @@
-module github.com/deepmap/oapi-codegen
+module github.com/leslie-wang/oapi-codegen
 
 require (
 	github.com/cyberdelia/templates v0.0.0-20141128023046-ca7fffd4298c
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/deepmap/oapi-codegen v1.4.0
 	github.com/getkin/kin-openapi v0.13.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/golangci/lint-1 v0.0.0-20181222135242-d2cdd8c08219
+	github.com/json-iterator/go v1.1.10
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/labstack/echo/v4 v4.1.11
 	github.com/matryer/moq v0.0.0-20190312154309-6cfb0558e1bd
